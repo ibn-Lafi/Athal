@@ -14,7 +14,7 @@ namespace Athal.Game.Player
         [SerializeField] float jumpHeight = 1.45f;
         [SerializeField] float gravity = -28f;
         [SerializeField] float slideDuration = .62f;
-        [SerializeField] Animator animator;
+        [SerializeField] RunnerVisual visual;
 
         CharacterController controller;
         int lane = 1;
@@ -49,8 +49,7 @@ namespace Athal.Game.Player
             Vector3 velocity = new Vector3(xVelocity, verticalVelocity, GameManager.Instance.Speed);
             controller.Move(velocity * Time.deltaTime);
 
-            animator?.SetFloat("Speed", GameManager.Instance.Speed);
-            animator?.SetBool("Grounded", controller.isGrounded);
+            visual?.SetRun(GameManager.Instance.Speed, controller.isGrounded);
         }
 
         void ReadInput()
@@ -66,15 +65,17 @@ namespace Athal.Game.Player
         public void ChangeLane(int direction)
         {
             if (sliding && direction == 0) return;
+            int previous = lane;
             lane = Mathf.Clamp(lane + direction, 0, 2);
-            animator?.SetInteger("Lane", lane);
+            if (lane != previous) visual?.SetLaneDirection(direction);
+            visual?.SetLane(lane);
         }
 
         public void Jump()
         {
             if (!controller.isGrounded || sliding) return;
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            animator?.SetTrigger("Jump");
+            visual?.Jump();
         }
 
         public void Slide()
@@ -86,13 +87,13 @@ namespace Athal.Game.Player
         IEnumerator SlideRoutine()
         {
             sliding = true;
-            animator?.SetBool("Sliding", true);
+            visual?.SetSliding(true);
             controller.height = standingHeight * .5f;
             controller.center = standingCenter - Vector3.up * standingHeight * .25f;
             yield return new WaitForSeconds(slideDuration);
             controller.height = standingHeight;
             controller.center = standingCenter;
-            animator?.SetBool("Sliding", false);
+            visual?.SetSliding(false);
             sliding = false;
         }
 
@@ -100,7 +101,7 @@ namespace Athal.Game.Player
         {
             if (hit) return;
             hit = true;
-            animator?.SetTrigger("Hit");
+            visual?.Hit();
             FindFirstObjectByType<CameraImpact>()?.Shake();
             GameManager.Instance?.BreakCombo();
             GameManager.Instance?.EndRun();
@@ -112,7 +113,8 @@ namespace Athal.Game.Player
             sliding = false;
             verticalVelocity = 0f;
             lane = 1;
-            animator?.SetBool("Sliding", false);
+            visual?.SetSliding(false);
+            visual?.ResetVisual();
         }
     }
 }
