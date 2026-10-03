@@ -1,5 +1,6 @@
 using System.Collections;
 using Athal.Game.Core;
+using Athal.Game.Camera;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,8 +20,13 @@ namespace Athal.Game.Player
         int lane = 1;
         float verticalVelocity;
         bool sliding;
+        bool hit;
         float standingHeight;
         Vector3 standingCenter;
+
+        public bool IsSliding => sliding;
+        public bool IsAirborne => !controller.isGrounded;
+        public bool IsHit => hit;
 
         void Awake()
         {
@@ -90,10 +96,23 @@ namespace Athal.Game.Player
             sliding = false;
         }
 
-        void OnControllerColliderHit(ControllerColliderHit hit)
+        public void Hit()
         {
-            if (hit.collider.CompareTag("Obstacle"))
-                GameManager.Instance?.EndRun();
+            if (hit) return;
+            hit = true;
+            animator?.SetTrigger("Hit");
+            FindFirstObjectByType<CameraImpact>()?.Shake();
+            GameManager.Instance?.BreakCombo();
+            GameManager.Instance?.EndRun();
+        }
+
+        public void ResetRunner()
+        {
+            hit = false;
+            sliding = false;
+            verticalVelocity = 0f;
+            lane = 1;
+            animator?.SetBool("Sliding", false);
         }
     }
 }
