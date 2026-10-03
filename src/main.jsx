@@ -1,0 +1,16 @@
+import React,{useState}from'react';import{createRoot}from'react-dom/client';import{Gamepad2,Trophy,UserRound,Share2,ChevronLeft,Sparkles}from'lucide-react';import'./style.css';
+
+const leaders=[
+['HA','HUS**** ALA****',203190],['AA','ABD******* ALH*****',147316],['SA','SAR** ALD*****',139173],['AA','ABD******* ALM***',129745],['F*','FAI*** ** QUR****',129658],['MA','MAT** ALJ******',129500],['MA','MOH**** ALS****',124143],['AA','ABR** ALM******',106766],['RH','RAM* HAB***',105723],['MA','MAS**** ALS*****',105539],['JA','JEL** ALH****',105180]
+];
+function App(){const[tab,setTab]=useState('game'),[tries,setTries]=useState(2),[score,setScore]=useState(0),[playing,setPlaying]=useState(false),[registered,setRegistered]=useState(false),[phone,setPhone]=useState('');
+const play=()=>{if(!registered){setTab('account');return}if(!tries||playing)return;setPlaying(true);setTries(x=>x-1);setTimeout(()=>{setScore(Math.floor(65000+Math.random()*95000));setPlaying(false)},900)};
+const share=async()=>{const data={title:'لعبة محمصة أثل',text:'جرّب لعبة أثل ونافسني!',url:location.href+'?ref=ATHL24'};try{navigator.share?await navigator.share(data):await navigator.clipboard.writeText(data.url)}catch{}};
+return <main><header><div className="brand"><div className="mark">أثل</div><div><b>محمصة أثل</b><small>ATHL ROASTERY</small></div></div><button className="round"><UserRound/></button></header>
+<section className="screen">
+{tab==='game'&&<><div className="eyebrow"><Sparkles/> تحدّي أثل</div><h1>نافس واربح</h1><p className="sub">اجمع أعلى نتيجة وخلّ اسمك في لوحة المتصدرين.</p><div className={'game '+(playing?'active':'')}><div className="bean">☕</div><div className="target"><span>{playing?'جاري اللعب…':'اضغط وابدأ'}</span></div><button className="play" onClick={play}>{registered?(tries? 'العب الآن':'انتهت فرصك'):'سجّل والعب'}</button></div><div className="stats"><div><small>فرصك</small><strong>{tries}</strong></div><div><small>أفضل نتيجة</small><strong>{score?score.toLocaleString('en-US'):'—'}</strong></div></div><button className="share" onClick={share}><Share2/> شارك رابطك <span>كل تسجيل = +2 فرصة</span></button></>}
+{tab==='leaders'&&<><div className="titleRow"><ChevronLeft/><div><h1>نافس واربح</h1><p>لوحة المتصدرين</p></div></div><div className="board">{leaders.map((x,i)=><div className={'row '+(i<4?'top':'')} key={i}><b className="rank">{i+1}</b><span className="avatar">{x[0]}</span><strong className="masked">{x[1]}</strong><span className="points"><i>✦</i>{x[2]}</span></div>)}</div></>}
+{tab==='account'&&<><div className="formHead"><div className="logoBig">أثل</div><h1>سجّل وابدأ التحدي</h1><p>لك فرصتان مجانًا، وتقدر تزيدها بمشاركة رابطك.</p></div><div className="form"><label>رقم الجوال</label><div className="phone"><span>+966</span><input inputMode="numeric" placeholder="5X XXX XXXX" value={phone} onChange={e=>setPhone(e.target.value)}/></div><button onClick={()=>{if(phone.length>=9){setRegistered(true);setTab('game')}}}>متابعة</button><small>نسخة تجريبية — لن يتم إرسال رمز تحقق الآن.</small></div></>}
+</section>
+<nav>{[['game',Gamepad2,'اللعبة'],['leaders',Trophy,'الفائزين'],['account',UserRound,'حسابي']].map(([id,Icon,label])=><button className={tab===id?'on':''} onClick={()=>setTab(id)} key={id}><Icon/><span>{label}</span></button>)}</nav></main>}
+createRoot(document.getElementById('root')).render(<App/>);
