@@ -1,10 +1,11 @@
 'use client';
 import {Canvas,useFrame,useThree} from '@react-three/fiber';
 import {Environment,Text} from '@react-three/drei';
-import {useRef} from 'react';
+import {useEffect,useRef} from 'react';
 import * as THREE from 'three';
 import {LANES as lanes,ASSETS} from '../lib/game/config';
 import {AnimatedModel,useOptionalGLTF} from './game/GLBAsset';
+import {JUMP_MS,jumpHeight} from '../lib/game/player';
 
 
 function AssetSlot({url,children,modelProps={},...props}){
@@ -13,17 +14,19 @@ function AssetSlot({url,children,modelProps={},...props}){
 }
 function RunnerAsset({lane,jump,slide,playing,elevated}){
  const gltf=useOptionalGLTF(ASSETS.character);
- const root=useRef();
+ const root=useRef(),jumpStart=useRef(0);
  const state=jump?'jump':slide?'slide':playing?'run':'idle';
- useFrame((_,d)=>{if(!root.current)return;root.current.position.x=THREE.MathUtils.lerp(root.current.position.x,lanes[lane],Math.min(1,d*12));root.current.position.y=THREE.MathUtils.lerp(root.current.position.y,(elevated?1.55:0)+(jump?1.15:0),Math.min(1,d*9));root.current.rotation.z=THREE.MathUtils.lerp(root.current.rotation.z,(lane-1)*-.08,d*8)});
+ useEffect(()=>{if(jump)jumpStart.current=performance.now()},[jump]);
+ useFrame((_,d)=>{if(!root.current)return;const progress=jump&&jumpStart.current?Math.min(1,(performance.now()-jumpStart.current)/JUMP_MS):1;const y=(elevated?1.55:0)+(jump?jumpHeight(progress):0);root.current.position.x=THREE.MathUtils.lerp(root.current.position.x,lanes[lane],Math.min(1,d*13));root.current.position.y=THREE.MathUtils.lerp(root.current.position.y,y,Math.min(1,d*18));root.current.rotation.z=THREE.MathUtils.lerp(root.current.rotation.z,(lane-1)*-.08,d*9)});
  if(!gltf)return <AthlRunner lane={lane} jump={jump} slide={slide} elevated={elevated} playing={playing}/>;
  return <group ref={root} position={[0,0,2.55]}><AnimatedModel url={ASSETS.character} state={state} scale={1.1} rotation={[0,Math.PI,0]}/></group>
 }
 
 function CameraRig({lane,playing}){const{camera}=useThree();useFrame(({clock},d)=>{const bob=playing?Math.sin(clock.elapsedTime*12)*.025:0;camera.position.x=THREE.MathUtils.lerp(camera.position.x,(lane-1)*.16,d*3);camera.position.y=THREE.MathUtils.lerp(camera.position.y,3.25+bob,d*4);camera.lookAt(0,.9,-2.8)});return null}
 function AthlRunner({lane,jump,slide,playing,elevated}){
- const root=useRef(),leftLeg=useRef(),rightLeg=useRef(),leftArm=useRef(),rightArm=useRef(),scarf=useRef();
- useFrame(({clock},d)=>{if(!root.current)return;const t=clock.elapsedTime*13,run=playing?Math.sin(t):0;root.current.position.x=THREE.MathUtils.lerp(root.current.position.x,lanes[lane],Math.min(1,d*12));root.current.position.y=THREE.MathUtils.lerp(root.current.position.y,(elevated?1.55:0)+(jump?1.15:0),Math.min(1,d*9));root.current.rotation.z=THREE.MathUtils.lerp(root.current.rotation.z,(lane-1)*-.11,d*8);root.current.rotation.x=THREE.MathUtils.lerp(root.current.rotation.x,playing?-.045:0,d*5);root.current.scale.y=THREE.MathUtils.lerp(root.current.scale.y,slide?.55:1,d*12);if(leftLeg.current)leftLeg.current.rotation.x=run*.62;if(rightLeg.current)rightLeg.current.rotation.x=-run*.62;if(leftArm.current)leftArm.current.rotation.x=-run*.55;if(rightArm.current)rightArm.current.rotation.x=run*.55;if(scarf.current)scarf.current.rotation.z=Math.sin(t*.35)*.08});
+ const root=useRef(),leftLeg=useRef(),rightLeg=useRef(),leftArm=useRef(),rightArm=useRef(),scarf=useRef(),jumpStart=useRef(0);
+ useEffect(()=>{if(jump)jumpStart.current=performance.now()},[jump]);
+ useFrame(({clock},d)=>{if(!root.current)return;const t=clock.elapsedTime*13,run=playing?Math.sin(t):0,progress=jump&&jumpStart.current?Math.min(1,(performance.now()-jumpStart.current)/JUMP_MS):1,y=(elevated?1.55:0)+(jump?jumpHeight(progress):0);root.current.position.x=THREE.MathUtils.lerp(root.current.position.x,lanes[lane],Math.min(1,d*13));root.current.position.y=THREE.MathUtils.lerp(root.current.position.y,y,Math.min(1,d*18));root.current.rotation.z=THREE.MathUtils.lerp(root.current.rotation.z,(lane-1)*-.11,d*8);root.current.rotation.x=THREE.MathUtils.lerp(root.current.rotation.x,playing?-.045:0,d*5);root.current.scale.y=THREE.MathUtils.lerp(root.current.scale.y,slide?.55:1,d*12);if(leftLeg.current)leftLeg.current.rotation.x=run*.62;if(rightLeg.current)rightLeg.current.rotation.x=-run*.62;if(leftArm.current)leftArm.current.rotation.x=-run*.55;if(rightArm.current)rightArm.current.rotation.x=run*.55;if(scarf.current)scarf.current.rotation.z=Math.sin(t*.35)*.08});
  return <group ref={root} position={[0,0,2.55]} scale={1.12}>
    <group ref={leftLeg} position={[-.18,.43,0]}><mesh castShadow position={[0,-.34,0]}><capsuleGeometry args={[.105,.58,7,14]}/><meshStandardMaterial color="#f4f0e8" roughness={.7}/></mesh><mesh castShadow position={[0,-.72,.12]}><boxGeometry args={[.27,.16,.5]}/><meshStandardMaterial color="#47372e"/></mesh></group>
    <group ref={rightLeg} position={[.18,.43,0]}><mesh castShadow position={[0,-.34,0]}><capsuleGeometry args={[.105,.58,7,14]}/><meshStandardMaterial color="#f4f0e8" roughness={.7}/></mesh><mesh castShadow position={[0,-.72,.12]}><boxGeometry args={[.27,.16,.5]}/><meshStandardMaterial color="#47372e"/></mesh></group>
