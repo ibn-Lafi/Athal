@@ -1,7 +1,7 @@
 'use client';
 import React,{useState}from'react';
 
-import{Gamepad2,Trophy,UserRound,Share2,Sparkles,Gift,Users,Copy,Check,ArrowRight,Droplets}from'lucide-react';
+import{Gamepad2,Trophy,UserRound,Share2,Sparkles,Gift,Users,Copy,Check,ArrowRight,Droplets,X}from'lucide-react';
 import dynamic from 'next/dynamic';
 const V60Scene=dynamic(()=>import('./V60Scene'),{ssr:false});
 
@@ -18,18 +18,15 @@ function App(){
  React.useEffect(()=>{if(stage==='dose'&&pouring){const t=setInterval(()=>setBeans(v=>Math.min(22,v+.18)),45);return()=>clearInterval(t)}if(stage==='grind'&&grinding){const t=setInterval(()=>setGrind(v=>(v+2)%100),45);return()=>clearInterval(t)}if(!pouring)return;const t=setInterval(()=>setWater(v=>Math.min(300,v+2.4)),50);return()=>clearInterval(t)},[pouring]);
  const share=async()=>{const data={title:'تحدّي محمصة أثل',text:'نافسني في تحدّي أثل واربح!',url:location.origin+'?ref=ATHL24'};try{if(navigator.share)await navigator.share(data);else{await navigator.clipboard.writeText(data.url);setCopied(true);setTimeout(()=>setCopied(false),1800)}}catch{}};
  return <main>
-  <header>
-   <div className="brand"><Logo/><div><b>محمصة أثل</b><small>ATHL ROASTERY</small></div></div>
-   <button className="profile" onClick={()=>setTab('account')} aria-label="الحساب"><UserRound/></button>
-  </header>
-  <section className="screen">
+  
+  <section className="screen fullGameScreen"><div className="gameTopHud"><button onClick={()=>setTab('account')}><UserRound/></button><button onClick={()=>setTab('leaders')}><Trophy/></button><span className="hudMetric"><Gamepad2/><b>{tries}</b></span><span className="hudMetric"><Sparkles/><b>{gamePoints.toLocaleString()}</b></span></div>
    {tab==='game'&&<div className="gamePage">
-    <div className="intro"><span className="pill"><Sparkles/> تحدّي أثل</span><h1>نافس واربح</h1><p>اختبر سرعتك، اجمع أعلى نتيجة<br/>وادخل لوحة المتصدرين.</p></div>
+    <div className="intro compactIntro"><span className="pill"><Sparkles/> تحدّي أثل</span><h1>نافس واربح</h1><p>اختبر سرعتك، اجمع أعلى نتيجة<br/>وادخل لوحة المتصدرين.</p></div>
     <div className="brew3d"><V60Scene stage={stage} value={stage==='dose'?beans:stage==='grind'?grind:water} pouring={pouring&&stage!=='dose'} grinding={grinding}/><div className="brewHud"><span><small>{stage==='grind'?'الطحنة':'الميزان'}</small><strong>{stage==='dose'?beans.toFixed(1)+'g':stage==='grind'?Math.round(grind)+'%':water.toFixed(1)+'g'}</strong></span><span><small>الهدف</small><strong>{stage==='dose'?'18.0g':stage==='grind'?'52%':'300g'}</strong></span></div><div className="brewStep"><b>{stage==='dose'?'1. وزن البن':stage==='grind'?'2. الطحن':'3. تحضير V60'}</b><small>{stage==='dose'?'زن 18.0g بدقة':stage==='grind'?'أوقف مؤشر الطحن قرب 52%':'اضغط باستمرار وحاول الوصول للوزن بدقة'}</small></div><button className={"pourBtn "+(pouring?"pouring":"")} onPointerDown={()=>stage==='grind'?setGrinding(true):setPouring(true)} onPointerUp={()=>{if(stage==='dose'){setPouring(false);const e=Math.abs(beans-18);setGamePoints(Math.max(0,Math.round(20000-e*9000)));setStage('grind')}else if(stage==='grind'){setGrinding(false);const e=Math.abs(grind-52);setGamePoints(p=>p+Math.max(0,Math.round(20000-e*600)));setStage('brew')}else setPouring(false)}} onPointerCancel={()=>setPouring(false)} onPointerLeave={()=>setPouring(false)}><Droplets/>{pouring?"استمر…":"اضغط واستمر للصب"}</button></div><div className="competitionScore"><span>نقاط المحاولة</span><strong>{gamePoints.toLocaleString()}</strong><small>وزن البن + الطحن + الصبات + الوقت = ترتيبك النهائي</small></div><div className="quickStats">
      <div><span className="statIcon"><Gamepad2/></span><p><small>فرص اللعب</small><strong>{tries}</strong></p></div>
      <div><span className="statIcon"><Trophy/></span><p><small>أفضل نتيجة</small><strong>{score?score.toLocaleString('en-US'):'—'}</strong></p></div>
     </div>
-    <button className="invite" onClick={share}><span className="inviteIcon">{copied?<Check/>:<Share2/>}</span><span><b>{copied?'تم نسخ الرابط':'ضاعف فرصك'}</b><small>كل صديق يسجل من رابطك = فرصتين إضافية</small></span><ArrowRight className="inviteArrow"/></button>
+    <button className="invite floatingShare" onClick={share}><span className="inviteIcon">{copied?<Check/>:<Share2/>}</span><span><b>{copied?'تم نسخ الرابط':'ضاعف فرصك'}</b><small>كل صديق يسجل من رابطك = فرصتين إضافية</small></span><ArrowRight className="inviteArrow"/></button>
    </div>}
    {tab==='leaders'&&<div className="leaderPage">
     <div className="pageTop"><span className="pill"><Trophy/> المنافسة</span><h1>لوحة المتصدرين</h1><p>أعلى النتائج في تحدّي محمصة أثل</p></div>
@@ -51,7 +48,7 @@ function App(){
     <div className="refCard"><span className="refIcon"><Gift/></span><h2>زِد فرصك</h2><p>شارك رابطك. كل شخص جديد يسجل عن طريقك يضيف لك فرصتين.</p><div className="refLink"><code>athal.app/?ref=ATHL24</code><button onClick={share}>{copied?<Check/>:<Copy/>}</button></div></div>
    </div>}
   </section>
-  <nav>{[['game',Gamepad2,'اللعبة'],['leaders',Trophy,'الترتيب'],['account',UserRound,'حسابي']].map(([id,Icon,label])=><button className={tab===id?'on':''} onClick={()=>setTab(id)} key={id}><Icon/><span>{label}</span></button>)}</nav>
+  
  </main>
 }
 export default App;
