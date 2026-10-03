@@ -1,7 +1,9 @@
 'use client';
 import React,{useState}from'react';
 
-import{Gamepad2,Trophy,UserRound,Share2,Sparkles,Gift,Users,Copy,Check,ArrowRight}from'lucide-react';
+import{Gamepad2,Trophy,UserRound,Share2,Sparkles,Gift,Users,Copy,Check,ArrowRight,Droplets}from'lucide-react';
+import dynamic from 'next/dynamic';
+const V60Scene=dynamic(()=>import('./V60Scene'),{ssr:false});
 
 
 const leaders=[
@@ -11,8 +13,9 @@ const leaders=[
 function Logo({large=false}){return <div className={'athalLogo '+(large?'large':'')}><span>أثل</span><small>ATHL</small></div>}
 
 function App(){
- const[tab,setTab]=useState('game'),[tries,setTries]=useState(2),[score,setScore]=useState(0),[playing,setPlaying]=useState(false),[registered,setRegistered]=useState(false),[phone,setPhone]=useState(''),[copied,setCopied]=useState(false);
+ const[tab,setTab]=useState('game'),[tries,setTries]=useState(2),[score,setScore]=useState(0),[playing,setPlaying]=useState(false),[registered,setRegistered]=useState(false),[phone,setPhone]=useState(''),[copied,setCopied]=useState(false),[pouring,setPouring]=useState(false),[water,setWater]=useState(0);
  const play=()=>{if(!registered){setTab('account');return}if(!tries||playing)return;setPlaying(true);setTries(x=>x-1);setTimeout(()=>{setScore(Math.floor(65000+Math.random()*95000));setPlaying(false)},1100)};
+ React.useEffect(()=>{if(!pouring)return;const t=setInterval(()=>setWater(v=>Math.min(300,v+2.4)),50);return()=>clearInterval(t)},[pouring]);
  const share=async()=>{const data={title:'تحدّي محمصة أثل',text:'نافسني في تحدّي أثل واربح!',url:location.origin+'?ref=ATHL24'};try{if(navigator.share)await navigator.share(data);else{await navigator.clipboard.writeText(data.url);setCopied(true);setTimeout(()=>setCopied(false),1800)}}catch{}};
  return <main>
   <header>
@@ -22,13 +25,7 @@ function App(){
   <section className="screen">
    {tab==='game'&&<div className="gamePage">
     <div className="intro"><span className="pill"><Sparkles/> تحدّي أثل</span><h1>نافس واربح</h1><p>اختبر سرعتك، اجمع أعلى نتيجة<br/>وادخل لوحة المتصدرين.</p></div>
-    <div className={'arena '+(playing?'active':'')}>
-     <div className="arenaGlow"></div><div className="orbit o1"></div><div className="orbit o2"></div>
-     <div className="cup"><span>أثل</span><i></i></div>
-     <div className="arenaText"><b>{playing?'ركّز…':'جاهز للتحدّي؟'}</b><small>{playing?'النتيجة تُحسب الآن':'كل محاولة ممكن توصلك للقمة'}</small></div>
-     <button className="primary" onClick={play}>{registered?(tries?'ابدأ اللعب':'انتهت فرصك'):'سجّل وابدأ'}<ArrowRight/></button>
-    </div>
-    <div className="quickStats">
+    <div className="brew3d"><V60Scene pouring={pouring}/><div className="brewHud"><span><small>الميزان</small><strong>{water.toFixed(1)}g</strong></span><span><small>الهدف</small><strong>300g</strong></span></div><div className="brewStep"><b>الصبة الأولى</b><small>اضغط باستمرار وحاول الوصول للوزن بدقة</small></div><button className={"pourBtn "+(pouring?"pouring":"")} onPointerDown={()=>setPouring(true)} onPointerUp={()=>setPouring(false)} onPointerCancel={()=>setPouring(false)} onPointerLeave={()=>setPouring(false)}><Droplets/>{pouring?"استمر…":"اضغط واستمر للصب"}</button></div><div className="quickStats">
      <div><span className="statIcon"><Gamepad2/></span><p><small>فرص اللعب</small><strong>{tries}</strong></p></div>
      <div><span className="statIcon"><Trophy/></span><p><small>أفضل نتيجة</small><strong>{score?score.toLocaleString('en-US'):'—'}</strong></p></div>
     </div>
