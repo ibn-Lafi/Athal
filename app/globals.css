@@ -13,3 +13,8 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#e8d4b4}.ha
 .gameLoaderMark{width:112px;height:112px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8eddd;border:1px solid #fff8;box-shadow:0 20px 50px #4d2f1d38}
 .gameLoaderMark span{font-size:39px;font-weight:900;line-height:1}.gameLoaderMark small{font-size:6px;letter-spacing:1.5px;margin-top:7px;font-weight:900}
 .gameLoaderTitle{margin-top:22px;font-size:18px;font-weight:900}.gameLoaderTrack{width:min(270px,78vw);height:7px;border-radius:99px;background:#fff5;overflow:hidden;margin:20px 0 8px}.gameLoaderTrack i{display:block;height:100%;border-radius:inherit;background:#5b4030;transition:width .25s ease}.gameLoader>b{font-size:11px}.gameLoader>small{margin-top:8px;font-size:8px;font-weight:800;opacity:.7}
+
+.scorePop{position:absolute;z-index:35;top:39%;font-size:26px;font-weight:1000;color:#fff7d7;text-shadow:0 3px 12px #4d2e1d,0 0 18px #ffd26d;pointer-events:none;animation:scoreBurst .72s ease-out forwards}.scorePop.lane0{left:23%}.scorePop.lane1{left:50%;transform:translateX(-50%)}.scorePop.lane2{right:23%}
+.comboPop{position:absolute;z-index:34;top:25%;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:#5b4030dd;color:#ffe9b2;font-size:10px;font-weight:1000;letter-spacing:.7px;box-shadow:0 7px 22px #321c1240;animation:comboPulse .7s ease-in-out infinite alternate;pointer-events:none}
+@keyframes scoreBurst{0%{opacity:0;scale:.65;translate:0 18px}25%{opacity:1;scale:1.2}100%{opacity:0;scale:1;translate:0 -54px}}
+@keyframes comboPulse{from{scale:.96}to{scale:1.05}}
