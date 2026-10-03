@@ -6,6 +6,7 @@ import{pointsFor,comboBonus,multiplier}from'../lib/game/config';
 import{createPattern}from'../lib/game/patterns';
 import{JUMP_MS,SLIDE_MS,PLATFORM_MS,jumpHeight}from'../lib/game/player';
 import{collisionFor}from'../lib/game/collision';
+import{frameScale,nextSpeed,difficultyForWave,SPAWN_EVERY_MS,SPEEDUP_EVERY_MS}from'../lib/game/loop';
 const RunnerScene=dynamic(()=>import('./RunnerScene'),{ssr:false});
 const leaders=[['HA','HUS****',486],['AA','ABD****',459],['SA','SAR****',431],['MA','MOH****',407],['FA','FAI****',389],['RA','RAM****',371]];
 function Logo(){return <div className="athalLogo"><span>أثل</span><small>ATHL</small></div>}
@@ -13,7 +14,18 @@ export default function App(){
  const[registered,setRegistered]=useState(false),[phone,setPhone]=useState(''),[name,setName]=useState(''),[authStep,setAuthStep]=useState('details'),[otp,setOtp]=useState(['','','','']),[needsAuth,setNeedsAuth]=useState(false),[tab,setTab]=useState('game'),[tries,setTries]=useState(3),[total,setTotal]=useState(0),[round,setRound]=useState(0),[playing,setPlaying]=useState(false),[lane,setLane]=useState(1),[jump,setJump]=useState(false),[slide,setSlide]=useState(false),[objects,setObjects]=useState([]),[speed,setSpeed]=useState(.16),[combo,setCombo]=useState(0),[last,setLast]=useState(null),[paused,setPaused]=useState(false),[elevated,setElevated]=useState(false);
  const touch=useRef(null),id=useRef(0),wave=useRef(0),jumpTimer=useRef(null),jumpStarted=useRef(0),slideTimer=useRef(null),platformTimer=useRef(null),rank=1+leaders.filter(x=>x[2]>total).length;
  const end=useCallback(()=>{setPlaying(false);setTotal(v=>v+round);setLast(round);setTries(v=>Math.max(0,v-1));setObjects([]);if(!registered)setNeedsAuth(true)},[round,registered]);
- useEffect(()=>{if(!playing||paused)return;const spawn=setInterval(()=>{const difficulty=Math.min(3,Math.floor(wave.current/6));const spawn=createPattern(id.current,difficulty);id.current=spawn.lastId;wave.current++;setObjects(a=>[...a,...spawn.batch])},700);const move=setInterval(()=>setObjects(a=>{const n=[];for(const o of a){const q={...o,depth:o.depth-speed};const jp=jump&&jumpStarted.current?Math.min(1,(performance.now()-jumpStarted.current)/JUMP_MS):1;const hit=collisionFor(q,{lane,jumpY:jump?jumpHeight(jp):0,sliding:slide,elevated});if(hit==='hit'){setCombo(0);end();return []}if(hit==='mount'){setElevated(true);clearTimeout(platformTimer.current);platformTimer.current=setTimeout(()=>setElevated(false),PLATFORM_MS);continue}if(hit==='collect'){const pts=pointsFor(q.type);setRound(s=>s+pts+comboBonus(combo));setCombo(c=>c+1);continue}if(q.depth>-3)n.push(q)}return n}),32);const harder=setInterval(()=>setSpeed(s=>Math.min(.34,s+.012)),4500);return()=>{clearInterval(spawn);clearInterval(move);clearInterval(harder)}},[playing,paused,lane,jump,slide,speed,combo,elevated,end]);
+ useEffect(()=>{if(!playing||paused)return;
+  let raf=0,last=performance.now(),spawnClock=0,speedClock=0;
+  const tick=now=>{const delta=Math.min(50,now-last);last=now;spawnClock+=delta;speedClock+=delta;
+   if(spawnClock>=SPAWN_EVERY_MS){spawnClock%=SPAWN_EVERY_MS;const difficulty=difficultyForWave(wave.current);const spawned=createPattern(id.current,difficulty);id.current=spawned.lastId;wave.current++;setObjects(a=>[...a,...spawned.batch])}
+   if(speedClock>=SPEEDUP_EVERY_MS){speedClock%=SPEEDUP_EVERY_MS;setSpeed(nextSpeed)}
+   const scale=frameScale(delta);
+   setObjects(a=>{const n=[];for(const o of a){const q={...o,depth:o.depth-speed*scale};const jp=jump&&jumpStarted.current?Math.min(1,(performance.now()-jumpStarted.current)/JUMP_MS):1;const hit=collisionFor(q,{lane,jumpY:jump?jumpHeight(jp):0,sliding:slide,elevated});if(hit==='hit'){setCombo(0);end();return []}if(hit==='mount'){setElevated(true);clearTimeout(platformTimer.current);platformTimer.current=setTimeout(()=>setElevated(false),PLATFORM_MS);continue}if(hit==='collect'){const pts=pointsFor(q.type);setRound(v=>v+pts+comboBonus(combo));setCombo(c=>c+1);continue}if(q.depth>-3)n.push(q)}return n});
+   raf=requestAnimationFrame(tick);
+  };
+  raf=requestAnimationFrame(tick);
+  return()=>cancelAnimationFrame(raf);
+ },[playing,paused,lane,jump,slide,speed,combo,elevated,end]);
  const start=()=>{if(!tries||(!registered&&last!==null))return;setRound(0);setCombo(0);setLane(1);setJump(false);jumpStarted.current=0;setSlide(false);setElevated(false);clearTimeout(jumpTimer.current);clearTimeout(slideTimer.current);clearTimeout(platformTimer.current);wave.current=0;setSpeed(.16);setObjects([]);setLast(null);setPlaying(true)};
  const swipeEnd=e=>{if(!touch.current||!playing)return;const p=e.changedTouches?.[0]||e;const dx=p.clientX-touch.current.x,dy=p.clientY-touch.current.y;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>28)setLane(l=>Math.max(0,Math.min(2,l+(dx>0?1:-1))));else if(dy<-28&&!jump&&!slide){setJump(true);jumpStarted.current=performance.now();clearTimeout(jumpTimer.current);jumpTimer.current=setTimeout(()=>{setJump(false);jumpStarted.current=0},JUMP_MS)}else if(dy>28&&!jump){setSlide(true);clearTimeout(slideTimer.current);slideTimer.current=setTimeout(()=>setSlide(false),SLIDE_MS)}touch.current=null};
  const share=async()=>{const url=location.origin+'?ref=ATHL24';try{if(navigator.share)await navigator.share({title:'تحدي افتتاح أثل',text:'تقدر تتجاوز نتيجتي؟',url});else await navigator.clipboard.writeText(url)}catch{}};
