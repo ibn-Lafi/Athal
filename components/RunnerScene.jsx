@@ -44,23 +44,21 @@ function AthlRunner({lane,jump,slide,playing,elevated}){
  </group>
 }
 
-function Palm({x,z,s=1}){return <group position={[x,0,z]} scale={s}><mesh position={[0,1.2,0]}><cylinderGeometry args={[.12,.18,2.4,10]}/><meshStandardMaterial color="#7b5637"/></mesh>{[0,1,2,3,4,5].map(i=><mesh key={i} position={[0,2.45,0]} rotation={[0,i*Math.PI/3,.72]}><boxGeometry args={[.12,.05,1.65]}/><meshStandardMaterial color="#45613a"/></mesh>)}</group>}
-function StreetTile({index}){
- const z=-index*12;
- return <group position={[0,0,z]}>
-  <mesh receiveShadow position={[0,-.13,-6]}><boxGeometry args={[5.1,.18,12]}/><meshStandardMaterial color="#a8794d" roughness={.92}/></mesh>
-  {lanes.map(x=><mesh key={x} position={[x,-.02,-6]}><boxGeometry args={[1.36,.04,12]}/><meshStandardMaterial color="#bd9061"/></mesh>)}
-  {[-.74,.74].map(x=><group key={x}>{[1,4,7,10].map(k=><mesh key={k} position={[x,.02,-k]}><boxGeometry args={[.035,.02,1.25]}/><meshStandardMaterial color="#ead4b0"/></mesh>)}</group>)}
-  {[-4.05,4.05].map((x,j)=><group key={j} position={[x,0,-6]}><mesh castShadow position={[0,1.65,0]}><boxGeometry args={[2.5,3.3,10.8]}/><meshStandardMaterial color={index%3===0?'#77503a':index%3===1?'#c18c5e':'#9d6a49'} roughness={.86}/></mesh>{[-3.7,0,3.7].map((dz,k)=><group key={k} position={[j?-.72:.72,2,dz]}><mesh><boxGeometry args={[.72,.95,.06]}/><meshStandardMaterial color="#3e2d25"/></mesh><Text position={[0,0,.04]} fontSize={.15} color="#ead5b7">أثل</Text></group>)}</group>)}
-  {index%2===0&&<Palm x={-3.02} z={-3} s={.92}/>}
-  {index%3===1&&<Palm x={3.02} z={-8} s={1.04}/>}
- </group>
-}
-function World({moving,speed=.16}){
- const root=useRef();
- useFrame((_,d)=>{if(!root.current||!moving)return;const pace=THREE.MathUtils.clamp((speed-.16)/.18,0,1);root.current.position.z+=d*(7.2+pace*7);if(root.current.position.z>=12)root.current.position.z-=12;});
- return <group ref={root}>{[0,1,2,3].map(i=><StreetTile key={i} index={i}/>)}</group>
-}
+function Palm({x,z,s=1}){return <group position={[x,0,z]} scale={s}><mesh castShadow position={[0,1.15,0]}><cylinderGeometry args={[.1,.18,2.3,8]}/><meshStandardMaterial color="#795236" roughness={1}/></mesh>{[0,1,2,3,4,5,6].map(i=><mesh key={i} position={[0,2.35,0]} rotation={[0,i*Math.PI/3.5,.72]}><boxGeometry args={[.1,.035,1.45]}/><meshStandardMaterial color="#526441" roughness={.9}/></mesh>)}</group>}
+function AthlFlag({x,z,flip=false}){return <group position={[x,0,z]}><mesh position={[0,1.65,0]}><cylinderGeometry args={[.025,.035,3.3,7]}/><meshStandardMaterial color="#5b4436" metalness={.3}/></mesh><mesh position={[flip?-.34:.34,2.55,0]}><boxGeometry args={[.68,.62,.025]}/><meshStandardMaterial color="#e7d1ad" roughness={.8}/></mesh><Text position={[flip?-.34:.34,2.55,.018]} fontSize={.13} color="#5a4030">ATHL</Text></group>}
+function MarketFront({side,index}){const x=side*4.05,face=-side*.74;return <group position={[x,0,-6]}><mesh castShadow position={[0,1.5,0]}><boxGeometry args={[2.45,3,11]}/><meshStandardMaterial color={index%3===0?'#79513b':index%3===1?'#b47d55':'#946144'} roughness={.92}/></mesh>{[-4,-1.3,1.4,4].map((dz,k)=><group key={k} position={[face,1.55,dz]}><mesh><boxGeometry args={[.08,1.35,1.7]}/><meshStandardMaterial color="#352b26"/></mesh><mesh position={[side*-.05,.88,0]}><boxGeometry args={[.14,.22,1.85]}/><meshStandardMaterial color="#d5b17e"/></mesh>{k%2===0&&<Text position={[side*-.1,.9,0]} rotation={[0,side>0?-Math.PI/2:Math.PI/2,0]} fontSize={.18} color="#f0ddbd">أثل</Text>}</group>)}</group>}
+function StreetTile({index}){const z=-index*12;return <group position={[0,0,z]}>
+ <mesh receiveShadow position={[0,-.14,-6]}><boxGeometry args={[5.45,.2,12]}/><meshStandardMaterial color="#9f744e" roughness={.96}/></mesh>
+ {lanes.map((x,i)=><mesh key={x} receiveShadow position={[x,-.025,-6]}><boxGeometry args={[1.34,.045,12]}/><meshStandardMaterial color={i===1?'#bc8c5d':'#b28257'} roughness={.9}/></mesh>)}
+ {[-.74,.74].map(x=><group key={x}>{[1.5,4.5,7.5,10.5].map(k=><mesh key={k} position={[x,.01,-k]}><boxGeometry args={[.035,.018,1.7]}/><meshBasicMaterial color="#ead0a7"/></mesh>)}</group>)}
+ <MarketFront side={-1} index={index}/><MarketFront side={1} index={index}/>
+ {index%2===0&&<><Palm x={-2.95} z={-2.2} s={.88}/><AthlFlag x={2.82} z={-4.8}/></>}
+ {index%2===1&&<><Palm x={3} z={-8.5} s={1}/><AthlFlag x={-2.82} z={-7.1} flip/></>}
+ {index%3===0&&<group position={[2.72,.28,-10]}><mesh castShadow><boxGeometry args={[.75,.55,.7]}/><meshStandardMaterial color="#76513b"/></mesh><mesh position={[-.45,-.05,.1]}><boxGeometry args={[.55,.42,.55]}/><meshStandardMaterial color="#c19a6d"/></mesh></group>}
+ </group>}
+function Mountains(){return <group position={[0,-.2,-30]}>{[-12,-7,-2,3,8,13].map((x,i)=><mesh key={x} position={[x,2.3+(i%2)*.7,0]} rotation={[0,0,i%2?.08:-.06]}><coneGeometry args={[5.8+(i%3),5.8+(i%2),4]}/><meshStandardMaterial color={i%2?'#9f7558':'#87624c'} roughness={1}/></mesh>)}</group>}
+function HorizonSign(){return <group position={[0,4.1,-17]}><mesh><boxGeometry args={[6.5,.12,.12]}/><meshStandardMaterial color="#604536"/></mesh><mesh position={[-3.05,-1.2,0]}><boxGeometry args={[.12,2.5,.12]}/><meshStandardMaterial color="#604536"/></mesh><mesh position={[3.05,-1.2,0]}><boxGeometry args={[.12,2.5,.12]}/><meshStandardMaterial color="#604536"/></mesh><mesh position={[0,-.05,.05]}><boxGeometry args={[3.4,.82,.08]}/><meshStandardMaterial color="#ead4b2"/></mesh><Text position={[0,-.04,.1]} fontSize={.3} color="#543a2c">ATHL  •  أثل</Text></group>}
+function World({moving,speed=.16}){const root=useRef();useFrame((_,d)=>{if(!root.current||!moving)return;const pace=THREE.MathUtils.clamp((speed-.16)/.18,0,1);root.current.position.z+=d*(7.2+pace*7);if(root.current.position.z>=12)root.current.position.z-=12;});return <><Mountains/><HorizonSign/><group ref={root}>{[0,1,2,3].map(i=><StreetTile key={i} index={i}/>)}</group></>}
 function SpeedStreaks({speed=.16,playing=false,quality='medium'}){const root=useRef();useFrame((_,d)=>{if(root.current&&playing)root.current.position.z=(root.current.position.z+d*(12+speed*30))%8});const pace=THREE.MathUtils.clamp((speed-.16)/.18,0,1);if(!playing||pace<.28||quality==='low')return null;return <group ref={root}>{Array.from({length:quality==='high'?14:8},(_,i)=>{const x=((i*1.73)%6)-3,y=.3+((i*1.17)%3),z=-2-((i*2.31)%12);return <mesh key={i} position={[x,y,z]} rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.008,.018,.55+pace*.8,5]}/><meshBasicMaterial color="#f6dfbd" transparent opacity={.12+pace*.22}/></mesh>})}</group>}
 
 function Item({o}){const x=lanes[o.lane],z=4-o.depth;
