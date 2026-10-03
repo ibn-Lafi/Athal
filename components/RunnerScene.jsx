@@ -1,6 +1,6 @@
 'use client';
 import {Canvas,useFrame,useThree} from '@react-three/fiber';
-import {Environment,Text,useGLTF} from '@react-three/drei';
+import {Environment,Text} from '@react-three/drei';
 import {useRef} from 'react';
 import * as THREE from 'three';
 import {LANES as lanes,ASSETS} from '../lib/game/config';
@@ -33,13 +33,21 @@ function AthlRunner({lane,jump,slide,playing,elevated}){
 }
 
 function Palm({x,z,s=1}){return <group position={[x,0,z]} scale={s}><mesh position={[0,1.2,0]}><cylinderGeometry args={[.12,.18,2.4,10]}/><meshStandardMaterial color="#7b5637"/></mesh>{[0,1,2,3,4,5].map(i=><mesh key={i} position={[0,2.45,0]} rotation={[0,i*Math.PI/3,.72]}><boxGeometry args={[.12,.05,1.65]}/><meshStandardMaterial color="#45613a"/></mesh>)}</group>}
+function StreetTile({index}){
+ const z=-index*12;
+ return <group position={[0,0,z]}>
+  <mesh receiveShadow position={[0,-.13,-6]}><boxGeometry args={[5.1,.18,12]}/><meshStandardMaterial color="#a8794d" roughness={.92}/></mesh>
+  {lanes.map(x=><mesh key={x} position={[x,-.02,-6]}><boxGeometry args={[1.36,.04,12]}/><meshStandardMaterial color="#bd9061"/></mesh>)}
+  {[-.74,.74].map(x=><group key={x}>{[1,4,7,10].map(k=><mesh key={k} position={[x,.02,-k]}><boxGeometry args={[.035,.02,1.25]}/><meshStandardMaterial color="#ead4b0"/></mesh>)}</group>)}
+  {[-4.05,4.05].map((x,j)=><group key={j} position={[x,0,-6]}><mesh castShadow position={[0,1.65,0]}><boxGeometry args={[2.5,3.3,10.8]}/><meshStandardMaterial color={index%3===0?'#77503a':index%3===1?'#c18c5e':'#9d6a49'} roughness={.86}/></mesh>{[-3.7,0,3.7].map((dz,k)=><group key={k} position={[j?-.72:.72,2,dz]}><mesh><boxGeometry args={[.72,.95,.06]}/><meshStandardMaterial color="#3e2d25"/></mesh><Text position={[0,0,.04]} fontSize={.15} color="#ead5b7">أثل</Text></group>)}</group>)}
+  {index%2===0&&<Palm x={-3.02} z={-3} s={.92}/>}
+  {index%3===1&&<Palm x={3.02} z={-8} s={1.04}/>}
+ </group>
+}
 function World({moving}){
- const motion=useRef();useFrame((_,d)=>{if(motion.current&&moving){motion.current.position.z+=d*8;if(motion.current.position.z>3)motion.current.position.z=0}});
- return <><mesh receiveShadow position={[0,-.13,-9]}><boxGeometry args={[5.1,.18,38]}/><meshStandardMaterial color="#a8794d" roughness={.92}/></mesh>{lanes.map(x=><mesh key={x} position={[x,-.02,-9]}><boxGeometry args={[1.36,.04,38]}/><meshStandardMaterial color="#bd9061"/></mesh>)}<group ref={motion}>{[-.74,.74].map(x=><group key={x}>{Array.from({length:14},(_,i)=><mesh key={i} position={[x,.02,-i*2.7]}><boxGeometry args={[.035,.02,1.1]}/><meshStandardMaterial color="#e8d1ab"/></mesh>)}</group>)}</group>
- {Array.from({length:8},(_,i)=><group key={i}>{[-4.05,4.05].map((x,j)=><group key={j} position={[x,0,-i*4.7]}><mesh castShadow position={[0,1.65,0]}><boxGeometry args={[2.5,3.3,2.2]}/><meshStandardMaterial color={i%3===0?'#77503a':i%3===1?'#c18c5e':'#9d6a49'} roughness={.86}/></mesh><mesh position={[j?-.75:.75,2.0,1.12]}><boxGeometry args={[.72,.95,.06]}/><meshStandardMaterial color="#3e2d25"/></mesh><Text position={[j?-.75:.75,2.0,1.16]} fontSize={.16} color="#ead5b7">أثل</Text><mesh position={[0,3.45,.15]}><boxGeometry args={[2.65,.22,2.3]}/><meshStandardMaterial color="#6a4633"/></mesh></group>)}</group>)}
- <Palm x={-3.05} z={-4}/><Palm x={3.05} z={-9} s={1.15}/><Palm x={-3.1} z={-16} s={.9}/>
- <group position={[0,0,-20]}><mesh position={[0,3.2,0]}><boxGeometry args={[8,.5,.55]}/><meshStandardMaterial color="#50372b"/></mesh><Text position={[0,3.22,.3]} fontSize={.55} color="#f2dfc3">أثل  ATHL</Text></group>
- </>;
+ const root=useRef();
+ useFrame((_,d)=>{if(!root.current||!moving)return;root.current.position.z+=d*8;const cycle=36;if(root.current.position.z>=12)root.current.position.z-=12;});
+ return <group ref={root}>{[0,1,2,3].map(i=><StreetTile key={i} index={i}/>)}</group>
 }
 function Item({o}){const x=lanes[o.lane],z=4-o.depth;
  if(o.type==='platform')return <group position={[x,.72,z]}><mesh castShadow><boxGeometry args={[1.32,1.45,5.8]}/><meshStandardMaterial color="#5a4033" metalness={.18} roughness={.5}/></mesh><mesh position={[0,.77,0]}><boxGeometry args={[1.2,.12,5.6]}/><meshStandardMaterial color="#c69c69" roughness={.75}/></mesh><Text position={[0,.15,2.93]} fontSize={.18} color="#ead8bc">أثل</Text></group>;
