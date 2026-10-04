@@ -242,3 +242,9 @@
 .wheelPage>.competitionTimer span{width:100%!important;min-width:0!important;height:52px!important;min-height:52px!important;padding:6px 2px!important;box-sizing:border-box!important}
 .wheelPage>.competitionTimer b{font-size:15px!important;line-height:17px!important}
 @media(max-width:380px){.floatingActions{grid-template-columns:1fr 68px 1fr!important;padding-left:10px!important;padding-right:10px!important}.floatingActions>.brandCompact{width:68px!important}.floatingActions>.brandCompact img{max-width:64px!important}.floatingActions>.scoreAction{max-width:140px!important}.wheelPage>.competitionTimer{width:calc(100vw - 24px)!important}}
+
+/* Athal cup asset used consistently */
+.cupIcon{display:inline-block!important;width:20px!important;height:20px!important;object-fit:contain!important;vertical-align:middle!important}
+.prizeSummary .cupIcon{width:22px!important;height:22px!important}
+.voucherList .cupIcon,.winIcon .cupIcon{width:24px!important;height:24px!important}
+.cupAsset{pointer-events:none}
