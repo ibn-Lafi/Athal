@@ -22,3 +22,15 @@
 .profileFloat:before,.scoreFloat:before{content:"";position:absolute;left:10%;right:10%;top:5%;height:42%;border-radius:999px;background:linear-gradient(180deg,#ffffff62,#ffffff08);pointer-events:none;filter:blur(.2px)}
 .profileFloat svg,.scoreFloat svg{position:relative;z-index:1;filter:drop-shadow(0 2px 2px #2d180e55)}
 .scoreFloat .scoreText,.scoreFloat .rankBadge{position:relative;z-index:1}
+
+/* Leaderboard 100 + glossy identity controls */
+.glossyControl{position:relative!important;overflow:hidden!important;background:linear-gradient(145deg,#8b624c 0%,#5b3d2f 46%,#3b261e 100%)!important;border:1px solid #a98470!important;color:#fff!important;box-shadow:inset 0 2px 1px #ffffff70,inset 0 -7px 14px #26140d66,0 8px 22px #4b302344!important}
+.glossyControl:before{content:"";position:absolute;z-index:0;left:8%;right:8%;top:4%;height:43%;border-radius:999px;background:linear-gradient(180deg,#ffffff7d,#ffffff08);pointer-events:none}
+.glossyIcon{position:relative;z-index:1;display:grid;place-items:center;filter:drop-shadow(0 2px 2px #24130b80)}
+.glossyIcon svg{stroke:#fff!important}
+.scoreAction.glossyControl small{color:#e8d9ce}.scoreAction.glossyControl i{position:relative;z-index:1;background:#ffffff22;color:#fff}.scoreAction.glossyControl span:not(.glossyIcon){position:relative;z-index:1}
+.leaderList{max-height:55dvh;overflow-y:auto;padding:0 2px}
+.leaderList .topTen{background:linear-gradient(90deg,#f6ecdf,#fffaf3);border:1px solid #ead7c1;border-radius:13px;margin:4px 0;padding:0 9px;box-shadow:0 4px 12px #5b3b2510}
+.leaderList .topTen:nth-child(1){background:linear-gradient(90deg,#f3dfad,#fff8e5);border-color:#d9b96e}.leaderList .topTen:nth-child(2){background:linear-gradient(90deg,#ece8e2,#fff);border-color:#cbc4ba}.leaderList .topTen:nth-child(3){background:linear-gradient(90deg,#ead0b6,#fff5eb);border-color:#c99a72}
+.leaderList .myRow{outline:2px solid #5b3d2f;outline-offset:-2px}
+.outsideRank{margin-top:12px;padding:12px 14px;border-radius:15px;background:#51382c;color:#fff;display:flex;align-items:center;gap:10px}.outsideRank small{font-size:8px;opacity:.75}.outsideRank b{font-size:17px}.outsideRank span{margin-right:auto;font-size:9px}
