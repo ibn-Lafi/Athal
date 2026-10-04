@@ -146,3 +146,11 @@
 .bottomSheet .logoutButton{background:transparent!important;border:1px solid #e5d9d0!important;color:#765e50!important}
 .bottomSheet .simpleRef button{min-height:30px!important;padding:5px 9px!important;background:#5b3d2f!important}
 .glossyShare{background:#5b3d2f!important;box-shadow:none!important;border-color:#5b3d2f!important}.glossyShare:before{display:none!important}
+
+/* Restore subtle gloss while keeping modal actions compact */
+.noticeModal button:not(.noticeClose),.authModal button:not(.modalClose):not(.textButton),.bottomSheet button:not(.sheetClose),.winModal button{background:linear-gradient(145deg,#80604f 0%,#5b3d2f 52%,#452c22 100%)!important;border:1px solid #8f705f!important;box-shadow:inset 0 1px 1px #ffffff5c,inset 0 -4px 8px #2b180e3d,0 4px 10px #4b30231f!important;text-shadow:0 1px 1px #24130b42!important}
+.noticeModal button:not(.noticeClose):before,.authModal button:not(.modalClose):not(.textButton):before,.bottomSheet button:not(.sheetClose):before,.winModal button:before{display:block!important;content:"";position:absolute;pointer-events:none;left:8%;right:8%;top:4%;height:38%;border-radius:999px;background:linear-gradient(180deg,#ffffff62,#ffffff05)}
+.compactReferral{display:flex!important;direction:ltr!important;align-items:center!important;gap:9px!important;margin-top:10px!important;background:transparent!important;border:0!important;padding:0!important}
+.compactReferral code{direction:ltr;flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border:1px solid #eadfd7;border-radius:12px;background:#f9f6f3;font-size:12px;letter-spacing:1px}
+.bottomSheet .shareCodeIcon{position:relative!important;flex:0 0 40px!important;width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;border-radius:12px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.shareCodeIcon svg{position:relative;z-index:2;width:16px!important;height:16px!important}
