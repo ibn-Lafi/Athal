@@ -254,3 +254,8 @@
 .prizeSummary .mahsoolIcon{width:22px!important;height:22px!important}
 .voucherList .mahsoolIcon,.winIcon .mahsoolIcon{width:24px!important;height:24px!important}
 .mahsoolAsset{pointer-events:none}
+
+/* Wheel: remove gloss/haze overlays */
+.svgWheel{filter:none!important}
+.svgWheel svg{filter:none!important}
+.wheelShell:before,.wheelShell:after{display:none!important;content:none!important}
