@@ -1,6 +1,6 @@
 'use client';
 import{useEffect,useState}from'react';
-import{getSupabase}from'../../lib/supabase';
+import{getSupabase,friendlyError}from'../../lib/supabase';
 import{Search,TicketCheck,Users,Trophy,Gift,RotateCw,LogOut}from'lucide-react';
 
 export default function AdminPage(){const[ready,setReady]=useState(false),[allowed,setAllowed]=useState(false),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[error,setError]=useState(''),[stats,setStats]=useState({users:0,spins:0,prizes:0}),[users,setUsers]=useState([]),[codes,setCodes]=useState([]),[query,setQuery]=useState('');
