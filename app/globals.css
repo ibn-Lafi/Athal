@@ -226,3 +226,19 @@
 .wheelPage>.competitionTimer b{font-size:13px!important;line-height:15px!important;margin:0 0 2px!important}
 .wheelPage>.competitionTimer span{font-size:7px!important;line-height:9px!important}
 @media(max-width:420px){.floatingActions>.brandCompact{width:64px!important;height:48px!important}.floatingActions>.brandCompact img{max-width:64px!important;max-height:48px!important}.wheelPage{padding-top:8px!important}.wheelPage>.competitionTimer{width:92%!important;min-height:80px!important}}
+
+/* Definitive mobile home layout fix */
+.athlApp{overflow-x:hidden!important}
+.floatingActions{position:relative!important;top:auto!important;left:auto!important;right:auto!important;width:100%!important;max-width:430px!important;margin:0 auto!important;padding:14px 16px 4px!important;box-sizing:border-box!important;display:grid!important;grid-template-columns:1fr 82px 1fr!important;align-items:center!important;gap:8px!important}
+.floatingActions>.scoreAction{position:static!important;justify-self:start!important;max-width:150px!important}
+.floatingActions>.accountAction{position:static!important;justify-self:end!important}
+.floatingActions>.brandCompact{position:static!important;justify-self:center!important;width:82px!important;height:58px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.floatingActions>.brandCompact img{max-width:78px!important;max-height:54px!important;object-fit:contain!important}
+.wheelPage{padding-top:0!important}
+.wheelPage>.intro{margin-top:2px!important}
+.wheelPage>.competitionTimer{box-sizing:border-box!important;width:min(calc(100vw - 32px),360px)!important;max-width:360px!important;min-height:0!important;height:auto!important;margin:10px auto 18px!important;padding:10px!important;overflow:hidden!important;border-radius:18px!important}
+.wheelPage>.competitionTimer>small{height:auto!important;margin:0 0 8px!important;padding:0!important}
+.wheelPage>.competitionTimer>div{width:100%!important;height:auto!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+.wheelPage>.competitionTimer span{width:100%!important;min-width:0!important;height:52px!important;min-height:52px!important;padding:6px 2px!important;box-sizing:border-box!important}
+.wheelPage>.competitionTimer b{font-size:15px!important;line-height:17px!important}
+@media(max-width:380px){.floatingActions{grid-template-columns:1fr 68px 1fr!important;padding-left:10px!important;padding-right:10px!important}.floatingActions>.brandCompact{width:68px!important}.floatingActions>.brandCompact img{max-width:64px!important}.floatingActions>.scoreAction{max-width:140px!important}.wheelPage>.competitionTimer{width:calc(100vw - 24px)!important}}
