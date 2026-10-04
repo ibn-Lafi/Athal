@@ -248,3 +248,9 @@
 .prizeSummary .cupIcon{width:22px!important;height:22px!important}
 .voucherList .cupIcon,.winIcon .cupIcon{width:24px!important;height:24px!important}
 .cupAsset{pointer-events:none}
+
+/* Athal Mahsool asset used consistently */
+.mahsoolIcon{display:inline-block!important;width:20px!important;height:20px!important;object-fit:contain!important;vertical-align:middle!important}
+.prizeSummary .mahsoolIcon{width:22px!important;height:22px!important}
+.voucherList .mahsoolIcon,.winIcon .mahsoolIcon{width:24px!important;height:24px!important}
+.mahsoolAsset{pointer-events:none}
