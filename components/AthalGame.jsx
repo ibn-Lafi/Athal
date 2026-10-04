@@ -1,45 +1,62 @@
 'use client';
-import React,{useCallback,useEffect,useRef,useState}from'react';
-import dynamic from'next/dynamic';
-import{Trophy,UserRound,Share2,Coffee,X,Play,Gift,Pause}from'lucide-react';
-import{pointsFor,comboBonus,multiplier}from'../lib/game/config';
-import{createPattern}from'../lib/game/patterns';
-import{JUMP_MS,SLIDE_MS,PLATFORM_MS,jumpHeight}from'../lib/game/player';
-import{collisionFor}from'../lib/game/collision';
-import{frameScale,nextSpeed,difficultyForWave,SPAWN_EVERY_MS,SPEEDUP_EVERY_MS}from'../lib/game/loop';
-import GameLoader,{useGamePreloader}from'./game/GameLoader';
-const RunnerScene=dynamic(()=>import('./RunnerScene'),{ssr:false});
-const leaders=[['HA','HUS****',486],['AA','ABD****',459],['SA','SAR****',431],['MA','MOH****',407],['FA','FAI****',389],['RA','RAM****',371]];
-function Logo(){return <div className="athalLogo"><span>أثل</span><small>ATHL</small></div>}
-export default function App(){
- const preload=useGamePreloader();
- const[registered,setRegistered]=useState(false),[phone,setPhone]=useState(''),[name,setName]=useState(''),[authStep,setAuthStep]=useState('details'),[otp,setOtp]=useState(['','','','']),[needsAuth,setNeedsAuth]=useState(false),[tab,setTab]=useState('game'),[tries,setTries]=useState(3),[total,setTotal]=useState(0),[round,setRound]=useState(0),[playing,setPlaying]=useState(false),[lane,setLane]=useState(1),[jump,setJump]=useState(false),[slide,setSlide]=useState(false),[objects,setObjects]=useState([]),[speed,setSpeed]=useState(.16),[combo,setCombo]=useState(0),[last,setLast]=useState(null),[paused,setPaused]=useState(false),[elevated,setElevated]=useState(false),[juice,setJuice]=useState(null),[impact,setImpact]=useState(0);
- const touch=useRef(null),id=useRef(0),wave=useRef(0),jumpTimer=useRef(null),jumpStarted=useRef(0),slideTimer=useRef(null),platformTimer=useRef(null),rank=1+leaders.filter(x=>x[2]>total).length;
- const end=useCallback(()=>{setImpact(v=>v+1);if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate(45);setPlaying(false);setTotal(v=>v+round);setLast(round);setTries(v=>Math.max(0,v-1));setObjects([]);if(!registered)setNeedsAuth(true)},[round,registered]);
- useEffect(()=>{if(!playing||paused)return;
-  let raf=0,last=performance.now(),spawnClock=0,speedClock=0;
-  const tick=now=>{const delta=Math.min(50,now-last);last=now;spawnClock+=delta;speedClock+=delta;
-   if(spawnClock>=SPAWN_EVERY_MS){spawnClock%=SPAWN_EVERY_MS;const difficulty=difficultyForWave(wave.current);const spawned=createPattern(id.current,difficulty);id.current=spawned.lastId;wave.current++;setObjects(a=>[...a,...spawned.batch])}
-   if(speedClock>=SPEEDUP_EVERY_MS){speedClock%=SPEEDUP_EVERY_MS;setSpeed(nextSpeed)}
-   const scale=frameScale(delta);
-   setObjects(a=>{const n=[];for(const o of a){const q={...o,depth:o.depth-speed*scale};const jp=jump&&jumpStarted.current?Math.min(1,(performance.now()-jumpStarted.current)/JUMP_MS):1;const hit=collisionFor(q,{lane,jumpY:jump?jumpHeight(jp):0,sliding:slide,elevated});if(hit==='hit'){setCombo(0);end();return []}if(hit==='mount'){setElevated(true);clearTimeout(platformTimer.current);platformTimer.current=setTimeout(()=>setElevated(false),PLATFORM_MS);continue}if(hit==='collect'){const pts=pointsFor(q.type);setRound(v=>v+pts+comboBonus(combo));setCombo(c=>c+1);setJuice({id:performance.now(),points:pts,lane:q.lane,combo:combo+1});if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate(12);continue}if(q.depth>-3)n.push(q)}return n});
-   raf=requestAnimationFrame(tick);
-  };
-  raf=requestAnimationFrame(tick);
-  return()=>cancelAnimationFrame(raf);
- },[playing,paused,lane,jump,slide,speed,combo,elevated,end]);
- const start=()=>{if(!tries||(!registered&&last!==null))return;setRound(0);setCombo(0);setLane(1);setJump(false);jumpStarted.current=0;setSlide(false);setElevated(false);clearTimeout(jumpTimer.current);clearTimeout(slideTimer.current);clearTimeout(platformTimer.current);wave.current=0;setSpeed(.16);setObjects([]);setJuice(null);setImpact(0);setLast(null);setPlaying(true)};
- const swipeEnd=e=>{if(!touch.current||!playing)return;const p=e.changedTouches?.[0]||e;const dx=p.clientX-touch.current.x,dy=p.clientY-touch.current.y;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>28)setLane(l=>Math.max(0,Math.min(2,l+(dx>0?1:-1))));else if(dy<-28&&!jump&&!slide){setJump(true);jumpStarted.current=performance.now();clearTimeout(jumpTimer.current);jumpTimer.current=setTimeout(()=>{setJump(false);jumpStarted.current=0},JUMP_MS)}else if(dy>28&&!jump){setSlide(true);clearTimeout(slideTimer.current);slideTimer.current=setTimeout(()=>setSlide(false),SLIDE_MS)}touch.current=null};
- if(!preload.ready)return <main className="runnerApp"><GameLoader progress={preload.progress}/></main>;
- const share=async()=>{const url=location.origin+'?ref=ATHL24';try{if(navigator.share)await navigator.share({title:'تحدي افتتاح أثل',text:'تقدر تتجاوز نتيجتي؟',url});else await navigator.clipboard.writeText(url)}catch{}};
- return <main className="runnerApp"><div className="runnerWorld" onTouchStart={e=>{const p=e.touches[0];touch.current={x:p.clientX,y:p.clientY}}} onTouchEnd={swipeEnd}><RunnerScene lane={lane} jump={jump} slide={slide} elevated={elevated} objects={objects} playing={playing&&!paused} juice={juice} impact={impact} speed={speed}/>
- <button className="pauseBtn" onClick={()=>playing&&setPaused(true)}><Pause/></button><div className="arcadeHud"><div className="scorePlate"><span>×{multiplier(combo)}</span><b>★</b><strong>{String(total+round).padStart(5,'0')}</strong></div><div className="tryPlate"><Coffee/><strong>{tries}</strong></div></div>
- <div className="runnerScore"><small>الجولة</small><b>{round}</b></div>{juice&&<div key={juice.id} className={'scorePop lane'+juice.lane}>+{juice.points}</div>}{combo>=4&&playing&&<div className="comboPop">COMBO ×{multiplier(combo)}</div>}
- <button className="shareOrb" onClick={share}><Share2/></button>
- {paused&&<div className="pauseMenu"><Logo/><h2>متوقف مؤقتًا</h2><button onClick={()=>setPaused(false)}><Play/> متابعة</button><button onClick={()=>{setPaused(false);setTab('leaders')}}><Trophy/> المتصدرون</button><button onClick={()=>{setPaused(false);setTab('account')}}><UserRound/> حسابي</button><button onClick={share}><Share2/> مشاركة</button></div>}
- {!playing&&tries>0&&!needsAuth&&<div className="runnerStart"><Logo/><h1>{last===null?'جاهز؟':'+'+last+' نقطة'}</h1><p>{last===null?'اسحب يمين ويسار، اقفز وتجنب العوائق.':'رصيدك الآن '+total+' · المركز #'+rank}</p><div className="collectLegend"><span>☕ +1</span><span>🍰 +3</span><span>بن +5</span></div><button onClick={start}><Play/> {last===null?'ابدأ الجري':'المحاولة التالية'}</button><small>↑ قفز　↓ انزلاق　← → تغيير المسار</small></div>}
- {!playing&&tries===0&&<div className="noTries"><Gift/><h2>انتهت محاولاتك</h2><b>{total} نقطة · المركز #{rank}</b><p>شارك رابطك، وعند تسجيل صديق جديد تحصل على محاولة إضافية.</p><button onClick={share}><Share2/> شارك التحدي</button></div>}</div>
- {needsAuth&&<div className="authGate"><div className="authCard"><Logo/>{authStep==='details'?<><span className="eventTag">احفظ نتيجتك</span><h2>سجّل للمنافسة</h2><p>سجّل الآن حتى نحفظ <b>{last}</b> نقطة ونضيفك للترتيب.</p><label>الاسم</label><input className="authInput" value={name} onChange={e=>setName(e.target.value)} placeholder="اسمك"/><label>رقم الجوال</label><div className="authPhone"><span>+966</span><input inputMode="numeric" maxLength="10" value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/g,''))} placeholder="5X XXX XXXX"/></div><button className="authPrimary" onClick={()=>name.trim().length>1&&phone.length>=9&&setAuthStep('otp')}>إرسال رمز التحقق</button></>:<><span className="eventTag">التحقق من الجوال</span><h2>أدخل رمز OTP</h2><p>أرسلنا رمزًا من 4 أرقام إلى <b dir="ltr">+966 {phone}</b></p><div className="otpRow" dir="ltr">{otp.map((v,i)=><input key={i} inputMode="numeric" maxLength="1" value={v} onChange={e=>{const n=[...otp],val=e.target.value.replace(/\D/g,'').slice(-1);n[i]=val;setOtp(n);if(val)e.target.nextElementSibling?.focus()}}/>)}</div><button className="authPrimary" onClick={()=>{if(otp.join('').length===4){setRegistered(true);setNeedsAuth(false);setAuthStep('details')}}}>تحقق وادخل المنافسة</button><button className="authBack" onClick={()=>setAuthStep('details')}>تعديل رقم الجوال</button><small>التحقق تجريبي حاليًا؛ سيتم ربط إرسال OTP الحقيقي بمزود الرسائل.</small></>}</div></div>}
- {tab==='leaders'&&<div className="panel"><button className="close" onClick={()=>setTab('game')}><X/></button><div className="panelTitle"><Trophy/><small>افتتاح أثل</small><h1>المتصدرون</h1><p>مجموع النقاط من جميع المحاولات</p></div><div className="topThree">{leaders.slice(0,3).map((x,i)=><div className={'place p'+(i+1)} key={x[1]}><b>{i+1}</b><span>{x[0]}</span><strong>{x[2]}</strong><small>نقطة</small></div>)}</div><div className="rankList">{leaders.slice(3).map((x,i)=><div key={x[1]}><b>{i+4}</b><span className="avatar">{x[0]}</span><strong>{x[1]}</strong><em>{x[2]}</em></div>)}</div><div className="myRank"><span>ترتيبك</span><b>#{rank}</b><strong>{total} نقطة</strong></div></div>}
- {tab==='account'&&<div className="panel"><button className="close" onClick={()=>setTab('game')}><X/></button><div className="accountSimple"><Logo/><h1>{name||'حسابك'}</h1><p dir="ltr">+966 {phone}</p><div><span><small>النقاط</small><b>{total}</b></span><span><small>المركز</small><b>#{rank}</b></span><span><small>المحاولات</small><b>{tries}</b></span></div><button onClick={share}><Share2/> مشاركة رابطك</button></div></div>}</main>
+import React,{useMemo,useState}from'react';
+import{Coffee,Gift,RotateCw,Trophy,UserRound,Share2,X}from'lucide-react';
+
+const SEGMENTS=[
+ {type:'points',value:10,label:'10'},{type:'points',value:20,label:'20'},{type:'coffee',label:'كوب'},
+ {type:'points',value:30,label:'30'},{type:'points',value:50,label:'50'},{type:'points',value:10,label:'10'},
+ {type:'points',value:100,label:'100'},{type:'points',value:20,label:'20'},{type:'points',value:30,label:'30'},
+ {type:'points',value:200,label:'200'},{type:'points',value:50,label:'50'},{type:'coffee',label:'كوب'},
+ {type:'points',value:20,label:'20'},{type:'points',value:100,label:'100'},{type:'points',value:10,label:'10'},
+ {type:'harvest',label:'محصول'},{type:'points',value:50,label:'50'},{type:'points',value:30,label:'30'},
+ {type:'points',value:20,label:'20'},{type:'points',value:10,label:'10'}
+];
+const COLORS=['#6f4a36','#d7b47b','#8e6a4f','#f1ddbd','#5a3b2d'];
+const leaders=[['HA','HUS****',620],['AA','ABD****',570],['SA','SAR****',490],['MA','MOH****',430],['FA','FAI****',390]];
+function Logo(){return <div className="wheelLogo"><b>أثل</b><small>ATHL ROASTERY</small></div>}
+export default function AthalGame(){
+ const[tries,setTries]=useState(3),[total,setTotal]=useState(0),[rotation,setRotation]=useState(0),[spinning,setSpinning]=useState(false),[result,setResult]=useState(null),[coffee,setCoffee]=useState(0),[harvest,setHarvest]=useState(0),[tab,setTab]=useState('game');
+ const rank=1+leaders.filter(x=>x[2]>total).length;
+ const wheel=useMemo(()=>SEGMENTS.map((s,i)=>({...s,color:COLORS[i%COLORS.length]})),[]);
+ const spin=()=>{
+  if(spinning||tries<=0)return;
+  setResult(null);setSpinning(true);
+  // Prototype selection. Production must request the winning segment from the server.
+  const index=Math.floor(Math.random()*SEGMENTS.length);
+  const segment=SEGMENTS[index],center=index*18+9;
+  const current=((rotation%360)+360)%360;
+  const target=(360-center+360)%360;
+  const delta=(target-current+360)%360;
+  setRotation(rotation+360*6+delta);
+  setTimeout(()=>{
+   setSpinning(false);setTries(v=>v-1);setResult(segment);
+   if(segment.type==='points')setTotal(v=>v+segment.value);
+   if(segment.type==='coffee')setCoffee(v=>v+1);
+   if(segment.type==='harvest')setHarvest(v=>v+1);
+   if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate([35,35,70]);
+  },4200);
+ };
+ const share=async()=>{try{if(navigator.share)await navigator.share({title:'عجلة أثل',text:'جرّب حظك في تحدي افتتاح أثل',url:location.href});else await navigator.clipboard.writeText(location.href)}catch{}};
+ return <main className="wheelApp" dir="rtl">
+  <header className="wheelHeader"><button onClick={()=>setTab('account')}><UserRound/></button><Logo/><button onClick={()=>setTab('leaders')}><Trophy/></button></header>
+  <section className="wheelStats"><div><small>مجموع نقاطك</small><strong>{total}</strong></div><i/><div><small>المحاولات</small><strong>{tries}</strong></div></section>
+  <section className="wheelStage">
+   <div className="wheelPointer"/>
+   <div className={'prizeWheel '+(spinning?'isSpinning':'')} style={{transform:`rotate(${rotation}deg)`}}>
+    {wheel.map((s,i)=><div className="wheelSlice" key={i} style={{'--i':i,'--c':s.color}}>
+      <span className={'sliceContent '+s.type}>{s.type==='coffee'?<Coffee/>:s.type==='harvest'?<><span className="beanIcon">◆</span><small>محصول</small></>:<><b>{s.value}</b><small>نقطة</small></>}</span>
+    </div>)}
+    <div className="wheelHub"><Logo/></div>
+   </div>
+  </section>
+  <section className="wheelAction">
+   {result&&!spinning&&<div className={'spinResult '+result.type}>{result.type==='points'?<><small>أضفنا لرصيدك</small><b>+{result.value} نقطة</b></>:result.type==='coffee'?<><Coffee/><small>مبروك!</small><b>فزت بكوب قهوة</b></>:<><Gift/><small>مبروك!</small><b>فزت بمحصول أثل</b></>}</div>}
+   {!result&&<p>{spinning?'العجلة تدور...':'لف العجلة واكتشف نتيجتك'}</p>}
+   <button className="spinButton" disabled={spinning||tries<=0} onClick={spin}>{spinning?<><RotateCw className="spinIcon"/> جاري الدوران</>:tries>0?<><RotateCw/> لف العجلة</>:'انتهت المحاولات'}</button>
+   <button className="shareButton" onClick={share}><Share2/> مشاركة التحدي</button>
+  </section>
+  <footer className="prizeBar"><div><Coffee/><span><small>أكواب فزت بها</small><b>{coffee}</b></span></div><div><Gift/><span><small>محاصيل فزت بها</small><b>{harvest}</b></span></div></footer>
+  {tab==='leaders'&&<div className="wheelPanel"><button className="panelClose" onClick={()=>setTab('game')}><X/></button><Trophy className="panelIcon"/><small>افتتاح أثل</small><h2>المتصدرون</h2><p>ترتيب أعلى مجموع للنقاط</p><div className="wheelRanks">{leaders.map((x,i)=><div key={x[1]}><b>#{i+1}</b><span>{x[1]}</span><strong>{x[2]}</strong></div>)}</div><div className="yourRank"><span>ترتيبك #{rank}</span><b>{total} نقطة</b></div></div>}
+  {tab==='account'&&<div className="wheelPanel"><button className="panelClose" onClick={()=>setTab('game')}><X/></button><UserRound className="panelIcon"/><small>حساب المسابقة</small><h2>جوائزك ونقاطك</h2><div className="accountGrid"><div><strong>{total}</strong><small>نقطة</small></div><div><strong>{coffee}</strong><small>كوب قهوة</small></div><div><strong>{harvest}</strong><small>محصول</small></div><div><strong>{tries}</strong><small>محاولة</small></div></div></div>}
+ </main>
 }
