@@ -161,3 +161,18 @@
 .phoneField{width:100%;height:46px;display:flex;align-items:center;border:1px solid #e5d9d0;border-radius:13px;background:#fff;overflow:hidden;margin:8px 0}.phoneField:focus-within{border-color:#9c7a67}.phoneField>span{height:100%;display:flex;align-items:center;padding:0 12px;border-right:1px solid #eee4dd;color:#5b3d2f;font-size:12px;font-weight:700;background:#faf7f4}.phoneField>input{flex:1;min-width:0;height:100%;border:0!important;outline:0!important;background:transparent!important;margin:0!important;padding:0 12px!important;text-align:left!important;box-shadow:none!important;font-size:13px!important}
 .otpBoxes{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:7px;width:100%;margin:10px 0;direction:ltr}.otpBoxes span{height:48px;border:1px solid #e4d8cf;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#4f352a}.otpBoxes span.filled{border-color:#987461;background:#fcf8f5}.otpBoxes input{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:text;margin:0!important;padding:0!important}
 @media(max-width:390px){.otpBoxes{gap:5px}.otpBoxes span{height:44px;border-radius:10px}.authModal .modalClose.sheetClose{top:12px!important;left:12px!important}}
+
+/* Auth phone field matching compact Saudi reference */
+.phoneField{height:50px!important;border:1px solid #ddd8d5!important;border-radius:17px!important;background:#fff!important;padding:0 13px!important;gap:0!important;box-shadow:none!important}
+.phoneField>span{order:0!important;height:26px!important;padding:0 13px 0 0!important;border:0!important;border-right:0!important;border-left:1px solid #ddd8d5!important;background:transparent!important;color:#68636a!important;font-size:14px!important;font-weight:500!important;line-height:26px!important}
+.phoneField>span:before{content:"🇸🇦";margin-right:0;margin-left:9px;font-size:15px;vertical-align:middle}
+.phoneField>input{order:1!important;height:100%!important;padding:0 14px!important;font-size:15px!important;letter-spacing:.5px!important;color:#252126!important}
+.phoneField:focus-within{border-color:#a98a78!important;box-shadow:0 0 0 2px #a98a7814!important}
+
+/* Competition timer as a noticeable alert */
+.competitionTimer{position:relative!important;overflow:hidden!important;background:linear-gradient(145deg,#6f4a39 0%,#52372c 100%)!important;border:1px solid #8e6b58!important;color:#fff!important;box-shadow:0 7px 18px #4b302326!important;padding:12px!important}
+.competitionTimer:before{content:"";position:absolute;pointer-events:none;left:7%;right:7%;top:0;height:38%;border-radius:999px;background:linear-gradient(180deg,#ffffff28,#ffffff00)}
+.competitionTimer>small{position:relative;color:#fff!important;font-size:9px!important;font-weight:600!important}
+.competitionTimer>div{position:relative;gap:7px!important}
+.competitionTimer span{background:#fffaf5!important;color:#806e63!important;border:1px solid #ffffff4d!important;border-radius:12px!important;padding:8px 3px!important}
+.competitionTimer b{color:#241a16!important;font-size:16px!important}
