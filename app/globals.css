@@ -176,3 +176,10 @@
 .competitionTimer>div{position:relative;gap:7px!important}
 .competitionTimer span{background:#fffaf5!important;color:#806e63!important;border:1px solid #ffffff4d!important;border-radius:12px!important;padding:8px 3px!important}
 .competitionTimer b{color:#241a16!important;font-size:16px!important}
+
+/* Referral: one clean code field + inline copy + consistent share glyph */
+.inviteHead{display:block!important}.inviteHead>div{width:100%!important}.compactReferral{align-items:stretch!important}
+.refCodeField{direction:ltr;flex:1;min-width:0;height:40px;display:flex;align-items:center;gap:7px;padding:4px 5px 4px 10px;border:1px solid #eadfd7;border-radius:12px;background:#f9f6f3}
+.compactReferral .refCodeField code{min-height:0!important;height:auto!important;flex:1!important;justify-content:flex-start!important;border:0!important;border-radius:0!important;background:transparent!important;padding:0!important;font-size:12px!important;letter-spacing:1px}
+.bottomSheet .copyInline{position:relative!important;flex:0 0 auto!important;width:auto!important;min-height:28px!important;height:28px!important;padding:4px 9px!important;border-radius:8px!important;font-size:8px!important;white-space:nowrap}
+.shareCodeIcon svg,.noticePrimary svg{width:17px!important;height:17px!important;stroke:currentColor!important;fill:none!important}
