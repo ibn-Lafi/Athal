@@ -299,3 +299,8 @@
 .winModal .winCode button{width:auto!important;min-width:72px!important;height:32px!important;min-height:32px!important;padding:0 9px!important;border-radius:9px!important;font-size:9px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important}
 .winModal .winCode button svg{width:13px;height:13px}
 .winHint{font-size:8px!important;color:#8a786e!important;margin:0 0 10px!important}
+
+/* Wheel suspense motion: fast launch, long natural deceleration */
+.svgWheel{transition:transform 5.2s cubic-bezier(.08,.72,.12,1)!important;will-change:transform}
+.wheelShell.isSpinning .wheelPointer{transform-origin:50% 0;animation:pointerTension .12s ease-in-out infinite alternate}
+@keyframes pointerTension{from{transform:translateX(-50%) rotate(-2deg)}to{transform:translateX(-50%) rotate(2deg)}}
