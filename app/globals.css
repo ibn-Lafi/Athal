@@ -86,3 +86,33 @@
 /* Fix repository-hosted visual assets */
 .athlApp{background-image:linear-gradient(#fffaf052,#fffaf052),url('https://raw.githubusercontent.com/ibn-Lafi/Athal/main/0E4A4ADC-8644-4C58-ADE1-21133B089474.png')!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
 .wheelCenterLogo{clip-path:circle(50% at 50% 50%)}
+
+/* Restore original clean site background */
+.athlApp{background-image:none!important;background:#fffaf4!important}
+
+/* Unified glossy actions across every popup/modal */
+.noticeModal button:not(.noticeClose),
+.authModal button:not(.modalClose):not(.textButton),
+.bottomSheet button:not(.sheetClose),
+.winModal button{
+ position:relative!important;overflow:hidden!important;
+ background:linear-gradient(145deg,#8b624c 0%,#5b3d2f 46%,#3b261e 100%)!important;
+ border:1px solid #a98470!important;color:#fff!important;
+ box-shadow:inset 0 2px 1px #ffffff70,inset 0 -7px 14px #26140d66,0 7px 18px #4b30232e!important;
+ text-shadow:0 1px 2px #24130b55
+}
+.noticeModal button:not(.noticeClose):before,
+.authModal button:not(.modalClose):not(.textButton):before,
+.bottomSheet button:not(.sheetClose):before,
+.winModal button:before{
+ content:"";position:absolute;z-index:0;left:6%;right:6%;top:4%;height:42%;border-radius:999px;
+ background:linear-gradient(180deg,#ffffff78,#ffffff08);pointer-events:none
+}
+.noticeModal button:not(.noticeClose)>*,
+.authModal button:not(.modalClose):not(.textButton)>*,
+.bottomSheet button:not(.sheetClose)>*,
+.winModal button>*{position:relative;z-index:1}
+.noticeModal .noticeSecondary{background:linear-gradient(145deg,#a17a65,#76513e 50%,#4d3328)!important;color:#fff!important}
+.bottomSheet .logoutButton{background:linear-gradient(145deg,#8d6958,#68483a 50%,#422c24)!important}
+.bottomSheet .simpleRef{background:#fff!important}
+.bottomSheet .simpleRef button{background:linear-gradient(145deg,#8b624c,#5b3d2f 48%,#3b261e)!important}
