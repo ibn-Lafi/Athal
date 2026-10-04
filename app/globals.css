@@ -82,3 +82,7 @@
 
 /* Athal supplied site background */
 .athlApp{background-image:linear-gradient(#fffaf0b8,#fffaf0b8),url('/0E4A4ADC-8644-4C58-ADE1-21133B089474.png')!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
+
+/* Fix repository-hosted visual assets */
+.athlApp{background-image:linear-gradient(#fffaf052,#fffaf052),url('https://raw.githubusercontent.com/ibn-Lafi/Athal/main/0E4A4ADC-8644-4C58-ADE1-21133B089474.png')!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
+.wheelCenterLogo{clip-path:circle(50% at 50% 50%)}
