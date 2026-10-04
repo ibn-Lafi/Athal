@@ -1,7 +1,7 @@
 'use client';
 import React,{useState}from'react';
 import{Coffee,Gift,RotateCw,Trophy,UserRound,Share2,X}from'lucide-react';
-const SEGMENTS=[{type:'points',value:10},{type:'points',value:20},{type:'coffee'},{type:'points',value:30},{type:'points',value:50},{type:'points',value:100},{type:'points',value:20},{type:'points',value:200},{type:'points',value:50},{type:'coffee'},{type:'points',value:30},{type:'points',value:100},{type:'points',value:10},{type:'harvest'},{type:'points',value:50}];
+const SEGMENTS=[{type:'points',value:10},{type:'points',value:20},{type:'coffee'},{type:'points',value:30},{type:'points',value:50},{type:'points',value:100},{type:'points',value:20},{type:'harvest'},{type:'points',value:200},{type:'points',value:50}];
 const STEP=360/SEGMENTS.length;
 const leaders=[['HUS****',620],['ABD****',570],['SAR****',490],['MOH****',430],['FAI****',390]];
 function Brand(){return <div className="brand"><b>أثل</b><small>ATHL ROASTERY</small></div>}
