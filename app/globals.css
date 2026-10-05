@@ -320,3 +320,14 @@
 .prizePackVisual img:first-child{order:1!important}
 .prizePackVisual span{order:2!important;min-width:25px;text-align:center}
 .prizePackVisual img:last-child{order:3!important}
+
+/* Points result: visible transfer from result modal to top score */
+.pointsWinBackdrop{position:fixed;inset:0;z-index:1180;background:#2c1d1745;backdrop-filter:blur(3px);display:grid;place-items:center;padding:18px;pointer-events:none}
+.pointsWinModal{position:relative;width:min(82vw,310px);padding:22px 18px 24px;border:1px solid #eadbcf;border-radius:26px;background:#fffaf5;text-align:center;box-shadow:0 24px 70px #39251b40;overflow:visible;animation:pointsModalIn .28s cubic-bezier(.2,.8,.2,1)}
+.pointsWinModal .brandCompact{margin:0 auto 4px!important}.pointsWinModal>small{font-size:9px;color:#9b8375}.pointsWinModal>h2{font-size:18px;margin:3px 0 10px;color:#38261e}.pointsWinAmount{display:flex;align-items:baseline;justify-content:center;gap:5px;direction:rtl}.pointsWinAmount strong{font-size:48px;line-height:1;font-variant-numeric:tabular-nums;color:#5b3d2f}.pointsWinAmount span{font-size:11px;font-weight:700;color:#8d715f}.pointsWinModal>p{font-size:9px!important;margin:8px 0 0!important;color:#8c796e!important}
+.coinFlight{position:absolute;left:50%;top:49%;width:1px;height:1px;overflow:visible}.coinFlight i{position:absolute;display:grid;place-items:center;width:19px;height:19px;border:1px solid #c69b62;border-radius:50%;background:#f3d89a;color:#6b4a34;font-style:normal;font-size:9px;font-weight:900;opacity:0;box-shadow:0 3px 8px #5b3d2f28;animation:coinToScore 1.45s cubic-bezier(.32,.04,.3,1) forwards;animation-delay:calc(.48s + var(--i)*.075s)}
+@keyframes pointsModalIn{from{opacity:0;transform:scale(.9) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes coinToScore{0%{opacity:0;transform:translate(0,0) scale(.5) rotate(0)}10%{opacity:1}55%{opacity:1;transform:translate(calc(-18px - var(--i)*1px),calc(-90px - var(--i)*2px)) scale(.9) rotate(180deg)}100%{opacity:0;transform:translate(calc(-42vw + 38px),calc(-50vh + 34px)) scale(.35) rotate(420deg)}}
+.scoreAction.scoreReceive,.scoreAction:has(.scoreCounting){animation:scoreReceivePulse .42s ease-in-out 3}
+@keyframes scoreReceivePulse{50%{transform:scale(1.045);box-shadow:0 7px 22px #7b563c32}}
+@media(prefers-reduced-motion:reduce){.coinFlight i{animation:none}.pointsWinModal{animation:none}}
