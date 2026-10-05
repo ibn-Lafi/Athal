@@ -348,3 +348,22 @@
 .modalBackdrop .brandCompact,.sheetBackdrop .brandCompact,.noticeBackdrop .brandCompact,.winBackdrop .brandCompact,.rankingPrizesBackdrop .brandCompact{
  background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important
 }
+
+/* Popup/sheet headers: keep original logo position, logo itself has no card */
+.sheetTitle.brandedSheetTitle .brand,
+.sheetTitle.brandedSheetTitle .brandCompact,
+.rankingPrizesModal>.brand,
+.rankingPrizesModal>.brandCompact,
+.authModal>.brand,
+.authModal>.brandCompact,
+.winModal>.brand,
+.winModal>.brandCompact{
+ background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important
+}
+.sheetTitle.brandedSheetTitle{position:relative!important}
+.sheetTitle.brandedSheetTitle .brand{margin:0!important}
+.leaderboardTitle{padding-inline-start:0!important}
+.leaderboardTitle>.rankingPrizesInfo{
+ position:static!important;left:auto!important;top:auto!important;transform:none!important;
+ margin-inline-start:auto!important;justify-self:end!important
+}
