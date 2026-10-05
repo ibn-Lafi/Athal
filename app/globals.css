@@ -380,3 +380,15 @@
 .bottomSheet:before,.bottomSheet:after{box-shadow:none!important}
 .sheetTitle .brand,.sheetTitle .brandCompact{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important}
 .sheetTitle .brand img,.sheetTitle .brandCompact img{background:transparent!important;box-shadow:none!important;border:0!important}
+
+/* When a bottom sheet is open, the page header belongs to the dimmed background */
+.athlApp:has(.sheetBackdrop)>.floatingActions{
+ z-index:1!important;
+ filter:none!important;
+}
+.sheetBackdrop{
+ z-index:1000!important;
+ background:rgba(43,29,23,.48)!important;
+ backdrop-filter:blur(2px)!important;
+}
+.bottomSheet{z-index:1001!important}
