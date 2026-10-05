@@ -337,3 +337,14 @@
 .pointsWinModal{width:min(82vw,310px)!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
 .pointsWinModal>small{color:#f3e7dd!important}.pointsWinModal>h2{color:#fff!important;text-shadow:0 2px 12px #24150f55}.pointsWinAmount strong{color:#fff!important;text-shadow:0 3px 18px #24150f70}.pointsWinAmount span,.pointsWinModal>p{color:#f6e9df!important}
 .floatingActions{z-index:950!important}.scoreAction{position:relative;z-index:951!important}
+
+/* Keep leaderboard prize info clear of the sheet close button */
+.leaderboardTitle{padding-inline-start:44px!important}
+.leaderboardTitle>.rankingPrizesInfo{position:absolute!important;left:48px!important;top:50%!important;transform:translateY(-50%)!important;z-index:2!important}
+@media(max-width:380px){.leaderboardTitle>.rankingPrizesInfo{left:44px!important}}
+
+/* Brand marks inside overlays/sheets must never look like cards */
+.modalBackdrop .brand,.sheetBackdrop .brand,.noticeBackdrop .brand,.winBackdrop .brand,.rankingPrizesBackdrop .brand,
+.modalBackdrop .brandCompact,.sheetBackdrop .brandCompact,.noticeBackdrop .brandCompact,.winBackdrop .brandCompact,.rankingPrizesBackdrop .brandCompact{
+ background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important
+}
