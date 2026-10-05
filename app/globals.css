@@ -367,3 +367,16 @@
  position:static!important;left:auto!important;top:auto!important;transform:none!important;
  margin-inline-start:auto!important;justify-self:end!important
 }
+
+/* Sheet header cleanup: no floating white logo panel; close + prize info side by side */
+.bottomSheet{position:relative!important}
+.sheetTopControls{position:absolute!important;top:16px!important;left:16px!important;z-index:12!important;display:flex!important;align-items:center!important;gap:8px!important;direction:ltr!important}
+.sheetTopControls .sheetClose,.sheetTopControls .rankingPrizesInfo{position:static!important;inset:auto!important;transform:none!important;margin:0!important;width:38px!important;height:38px!important;min-width:38px!important;border-radius:12px!important;display:grid!important;place-items:center!important}
+.sheetTopControls .rankingPrizesInfo{background:#6a4533!important;color:#fff!important;border:1px solid #9d735c!important}
+.leaderboardTitle{grid-template-columns:auto 1fr!important;padding-inline-start:0!important}
+.leaderboardTitle>.rankingPrizesInfo{display:none!important}
+
+/* Remove the large pale/white brand-card treatment at the top of sheets */
+.bottomSheet:before,.bottomSheet:after{box-shadow:none!important}
+.sheetTitle .brand,.sheetTitle .brandCompact{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important}
+.sheetTitle .brand img,.sheetTitle .brandCompact img{background:transparent!important;box-shadow:none!important;border:0!important}
