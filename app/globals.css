@@ -331,3 +331,9 @@
 .scoreAction.scoreReceive,.scoreAction:has(.scoreCounting){animation:scoreReceivePulse .42s ease-in-out 3}
 @keyframes scoreReceivePulse{50%{transform:scale(1.045);box-shadow:0 7px 22px #7b563c32}}
 @media(prefers-reduced-motion:reduce){.coinFlight i{animation:none}.pointsWinModal{animation:none}}
+
+/* Points transfer overlay: no popup card, dim page except live score */
+.pointsWinBackdrop{background:#2b1d176e!important;backdrop-filter:none!important;z-index:900!important}
+.pointsWinModal{width:min(82vw,310px)!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
+.pointsWinModal>small{color:#f3e7dd!important}.pointsWinModal>h2{color:#fff!important;text-shadow:0 2px 12px #24150f55}.pointsWinAmount strong{color:#fff!important;text-shadow:0 3px 18px #24150f70}.pointsWinAmount span,.pointsWinModal>p{color:#f6e9df!important}
+.floatingActions{z-index:950!important}.scoreAction{position:relative;z-index:951!important}
